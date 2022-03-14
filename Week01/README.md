@@ -1,4 +1,5 @@
 # Week01
+![Picture](lab01.png)
 ### Task requirements
 - The university offers one or more programs.
 - A program is made up of one or more courses.
