@@ -1,0 +1,92 @@
+Excercise 1
+
+1)Find the names of suppliers who supply some red part.
+
+SELECT distinct sname FROM catalog 
+INNER JOIN parts ON catalog.pid = parts.pid
+INNER JOIN suppliers ON catalog.sid = suppliers.sid
+WHERE parts.color = 'Red'
+
+
+2)Find the sids of suppliers who supply some red or green part.
+
+SELECT distinct catalog.sid FROM catalog 
+INNER JOIN parts ON catalog.pid = parts.pid
+INNER JOIN suppliers ON catalog.sid = suppliers.sid
+WHERE parts.color = 'Red' or parts.color = 'Green'
+
+
+3)Find the sids of suppliers who supply some red part or are at 221 Packer Street.
+
+SELECT distinct catalog.sid FROM catalog 
+INNER JOIN parts ON catalog.pid = parts.pid
+INNER JOIN suppliers ON catalog.sid = suppliers.sid
+WHERE parts.color = 'Red'
+union select sid
+from suppliers
+where suppliers.address = '221 Packer Street';
+
+4)Find the sids of suppliers who supply every red or (AND) green part.
+SELECT sid 
+	FROM catalog 
+	WHERE pid IN (SELECT p1.pid 
+				  FROM parts as p1 
+				  WHERE color = 'Red')
+GROUP BY sid 
+HAVING COUNT(sid) = (SELECT COUNT(p2.pid) 
+                     FROM parts as p2 
+                     WHERE color = 'Red')
+intersect  SELECT sid 
+	FROM catalog 
+	WHERE pid IN (SELECT p1.pid 
+				  FROM parts as p1 
+				  WHERE color = 'Green')
+GROUP BY sid 
+HAVING COUNT(sid) = (SELECT COUNT(p2.pid) 
+                     FROM parts as p2 
+                     WHERE color = 'Green')
+
+5)Find the sids of suppliers who supply every red part or supply every green part.
+SELECT sid 
+	FROM catalog 
+	WHERE pid IN (SELECT p1.pid 
+				  FROM parts as p1 
+				  WHERE color = 'Red')
+GROUP BY sid 
+HAVING COUNT(sid) = (SELECT COUNT(p2.pid) 
+                     FROM parts as p2 
+                     WHERE color = 'Red')
+union SELECT sid 
+	FROM catalog 
+	WHERE pid IN (SELECT p1.pid 
+				  FROM parts as p1 
+				  WHERE color = 'Green')
+GROUP BY sid 
+HAVING COUNT(sid) = (SELECT COUNT(p2.pid) 
+                     FROM parts as p2 
+                     WHERE color = 'Green')
+
+6)Find pairs of sids such that the supplier with the first sid charges more for some part than the supplier with the second sid .
+select distinct c1.sid, c2.sid
+from catalog c1, catalog c2
+where c1.sid  != c2.sid and c1.pid = c2.pid and c1.cost > c2.cost
+
+7)Find the pids of parts supplied by at least two different suppliers.
+select distinct c1.pid
+from catalog c1, catalog c2
+where c1.sid  != c2.sid and c1.pid = c2.pid
+
+8)find the average cost of the red parts and green parts for each of the suppliers
+SELECT sid, avg(cost)
+	FROM catalog 
+	WHERE pid IN (SELECT p1.pid 
+				  FROM parts as p1 
+				  WHERE p1.color = 'Red' or p1.color = 'Green')
+group by sid
+
+9)find the sids of suppliers whose most expensive part costs $50 or more
+SELECT distinct sid
+	FROM catalog 
+	where cost >= 50.0
+
+

@@ -1,0 +1,14 @@
+Excercise 2
+1) find join of tables Author and Book
+SELECT *
+	FROM Author
+	inner join Book on Author.author_id = Book.editor
+
+2) find first and last name of authors who is not editor of any book
+SELECT first_name, last_name
+FROM Author
+WHERE author_id NOT IN
+(SELECT editor
+FROM Book)
+
+3)Actually its the same from secon task

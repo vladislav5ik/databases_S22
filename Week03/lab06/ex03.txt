@@ -1,0 +1,19 @@
+Excercise 3
+1)Find the distinct names of all students who score more than 90% in the course numbered 107
+SELECT DISTINCT sname
+FROM Students S, Registration R, Courses C
+WHERE S.sid = R.sid AND R.cid = C.cid AND C.cid = 107 AND R.percent > 0.9
+
+2)Find the number of student whose score is 75% or above in each course.
+SELECT c.cname, COUNT(r.sid) AS students_number
+FROM courses c
+JOIN registration r ON c.cid = r.cid
+WHERE r.percent >= 0.75
+GROUP BY c.cid
+
+3)Find those students who are registered on no more than 2 courses.
+SELECT S.sid, S.sname
+FROM Students S, Registration R
+WHERE S.sid = R.sid
+GROUP BY S.sid
+HAVING COUNT(*) <= 2;
