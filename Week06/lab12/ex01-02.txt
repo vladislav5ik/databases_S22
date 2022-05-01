@@ -1,3 +1,5 @@
+-- TASK 1
+
 Create
 (p1:Person { name: 'Khabib Nurmagomedov', weight:'155'}),
 (p2:Person { name: 'Rafael Dos Anjos', weight:'155'}),
@@ -22,3 +24,54 @@ Create
 (p6)-[:beats]->(p7),
 (p6)-[:beats]->(p11),
 (p7)-[:beats]->(p4)
+
+-- TASK 2.1
+
+MATCH (p:Person)
+WHERE p.weight IN ['155','170','185'] AND
+(p)-[:beats]->()
+RETURN p
+
+-- TASK 2.2
+
+MATCH (p1:Person)-[b1:beats]->(p2:Person), (p2:Person)-[b2:beats]->(p1:Person)
+WITH p1, p2, count(*) AS c
+WHERE c = 1
+RETURN p1, p2
+
+-- TASK 2.3
+
+MATCH (p1:Person { name: 'Khabib Nurmagomedov'}),(p2:Person)
+WHERE p2.weight >= p1.weight AND
+NOT (p1)-[:beats]->(p2) and p1 <> p2
+RETURN p2
+
+-- TASK 2.4
+
+MATCH (p1:Person), (p2:Person)
+WHERE NOT (p1)-[:beats]->() and NOT ()-[:beats]->(p2)
+RETURN p1, p2
+
+Or, it can be splitted in two queries:
+
+MATCH (p1:Person)
+WHERE NOT (p1)-[:beats]->()
+RETURN p1
+
+MATCH (p2:Person)
+WHERE NOT ()-[:beats]->(p2)
+RETURN p2
+
+-- TASK 2.5
+
+Lets firstly update properties
+
+MATCH (p:Person)
+SET p.numWins = size((p)-[:beats]->()),
+p.numLosses = size((p)<-[:beats]-())
+RETURN p
+
+Them, print the results
+
+MATCH (p:Person)
+RETURN p.name AS name, p.weight, p.numWins,p.numLosses
